@@ -24,7 +24,7 @@ export default function App() {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/advice/${index}`);
+      const response = await fetch(`${API_BASE}/api/advice/${index}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
