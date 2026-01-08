@@ -10,39 +10,46 @@ export default function App() {
   const [error, setError] = useState("");
 
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-  console.log("API_BASE: ", API_BASE);
+  
 
   async function fetchNext() {
     setError("");
+    // const res = await fetch(`/api/advice/${index}`);
+    // const data = await res.json();
+    // console.log(data);
+    // console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
+    // console.log("MODE:", import.meta.env.MODE);
 
     if (done) return;
 
     setLoading(true);
     try {
-      const res = await fetch(`/api/advice/${index}/`);
-      console.log("RES: ")
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-      const data = await res.json();
-
-      if (data.done) {
-        setDone(true);
-        setAdvice(data.message ?? "That's all the advice.");
-      } else {
-        setAdvice(data.advice);
-        if (index >= TOTAL) setDone(true);
-        setIndex((prev) => prev + 1);
+      const response = await fetch(`/api/advice/${index}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-    } catch (e) {
-      setError(e.message || "Something went wrong");
-    } finally {
+      const data = await response.json();
+      setAdvice(data.advice);
+      if (index >= TOTAL) {
+        setDone(true);
+      } else {
+        setIndex(index + 1);
+      }
+
+    }
+    catch (err) {
+      setError(err.message);
+    }
+    finally {
       setLoading(false);
     }
+
+
   }
 
   return (
     <div style={{ maxWidth: 640, margin: "40px auto", fontFamily: "system-ui" }}>
       <h1>Advice</h1>
-
       <button onClick={fetchNext} disabled={loading || done}>
         {loading ? "Loading..." : done ? "No more advice" : "Get next advice"}
       </button>
