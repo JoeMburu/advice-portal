@@ -4193,6 +4193,7 @@ input[type=button].btn-block {
   .navbar-expand-lg .navbar-collapse {
     display: flex !important;
     flex-basis: auto;
+    margin-left: 25%;
   }
   .navbar-expand-lg .navbar-toggler {
     display: none;
