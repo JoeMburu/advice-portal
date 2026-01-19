@@ -15,6 +15,7 @@ import os
 from decouple import config
 import psycopg2
 import dj_database_url
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,23 +48,48 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",   
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.facebook",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    #"dj_rest_auth.registration",
     "corsheaders",
     "rest_framework",
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt',    
     "accounts",
     "category",
 ]
+SITE_ID = 1
 
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+REST_USE_JWT = True
+TOKEN_MODEL = None
+
+DJ_REST_AUTH = {
+  "USE_JWT": True,
+  "TOKEN_MODEL": None,
+}
+
+
+MIDDLEWARE = [   
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",    
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",    
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+    
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWS_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
      "http://localhost:5173",
@@ -118,6 +144,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {   
+    'DEFAULT_AUTHENTICATION_CLASSES': (       
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",   
+    ],  
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # in minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),  # in days   
+}
 
 
 
@@ -138,10 +177,37 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-REST_FRAMEWORK = {
-   
-    'DEFAULT_AUTHENTICATION_CLASSES': (       
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
-    
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/callback/'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['email', 'profile'],
+        'AUTH_PARAMS': { 'access_type': 'online'}, 
+        'OAUTH_PKCE_ENABLED': True,
+        'FETCH_USER_INFO': True,
+    },
+    # 'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SCOPE': ['email', 'public_profile'],
+    #     'FIELDS': [
+    #         'id',
+    #         'email',
+    #         'name',
+    #         'first_name',
+    #         'last_name',
+    #         'verified',
+    #         'locale',
+    #         'timezone',
+    #         'link',  
+    #     ]   
+    # }
 }
+
+SOCIALACCOUNT_STORE_TOKENS = True
+GOOGLE_OAUTH_CLIENT_ID = config("GOOGLE_OAUTH_CLIENT_ID")

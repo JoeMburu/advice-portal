@@ -14,22 +14,20 @@ export default function App() {
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com  
   return (
     <>    
-    <BrowserRouter>
-      <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+    <AuthProvider>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
-          {/* protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Route>
-        </Routes>
-        <Footer />
-      </AuthProvider>
-    </BrowserRouter>    
+        {/* protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Routes>
+      <Footer />
+    </AuthProvider>      
     </>
   );
 }

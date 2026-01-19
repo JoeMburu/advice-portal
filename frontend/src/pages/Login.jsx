@@ -3,6 +3,9 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../AuthProvider.jsx";
+import GoogleLoginButton from "./GoogleLoginButton.jsx";
+import { GoogleLogin } from "@react-oauth/google";
+
 
 
 export default function Login() { 
@@ -18,6 +21,7 @@ export default function Login() {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -43,13 +47,37 @@ export default function Login() {
       if (error.response && error.response.data) {
         setErrors({ non_field_errors: ["Invalid credentials. Please try again."]});
         setSuccess(false);
-      }
-      
-     
+      }     
     }
     finally {
       setLoading(false);
     }
+  }
+
+  // 👇 THIS function lives here
+  async function handleGoogleSuccess(credentialResponse) {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/auth/google/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_token: credentialResponse.credential,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Google auth failed", data);
+      return;
+    }
+
+    //console.log("Google auth successful", data);
+
+    login(data.access, data.refresh);
+    navigate("/dashboard", { replace: true });
   }
     
   return (
@@ -86,6 +114,7 @@ export default function Login() {
       </div> {/*<!-- card .// -->*/}
 
      <p className="text-center mt-4">Don't have account? <Link to="/register">Sign up</Link></p>
+     <GoogleLoginButton onSuccess={handleGoogleSuccess} />
      <br /><br /> 
     </section>    
     </>

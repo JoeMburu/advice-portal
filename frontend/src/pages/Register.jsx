@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
+
 import axios from "axios";
 
 
@@ -22,8 +23,6 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-
-
 
 
   const registerUser = async (e) => {
@@ -61,10 +60,12 @@ export default function Register() {
       setSuccess(false);
     }
     finally {
-      setLoading(false);
-      
+      setLoading(false);      
     }
-  }  
+  } 
+  
+  
+
 
   const hasAnyErrors = !!errors.non_field_errors || Object.keys(errors || {}).length > 0;
   
@@ -130,6 +131,10 @@ export default function Register() {
         </article>{/* card-body.// */}
       </div> {/* card .// */}
       <p className="text-center mt-4">Have an account? <Link to="/login">Log In</Link></p>
+      <p className="text-center mt-4">OR </p>
+      {/* <p className="text-center mt-4">Have a Google account? 
+        <button type="button" onClick={() => handleGoogleLogin()} className="btn btn-primary ml-3" >Continue with Google</button>
+      </p> */}
       <br /><br />
       {/* ============================ COMPONENT REGISTER  END.// ================================= */}
     </section>

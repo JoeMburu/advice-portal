@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
+import.meta.env.VITE_GOOGLE_CLIENT_ID
+import.meta.env.VITE_API_URL
 
 
 
 export default function Home() {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-    
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;    
   return (
     <>      
     {/* ========================= SECTION MAIN ========================= */}
