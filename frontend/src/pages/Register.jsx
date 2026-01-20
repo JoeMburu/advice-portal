@@ -1,16 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-
 import axios from "axios";
 
-
-
-
-
 export default function Register() {
-
-    const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
+  const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
   
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");

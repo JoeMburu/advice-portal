@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import.meta.env.VITE_GOOGLE_CLIENT_ID
 import.meta.env.VITE_API_URL
+import axios from "axios";
+import {React, useState, useEffect } from "react";
 
 
 
@@ -8,7 +10,22 @@ export default function Home() {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;    
-  return (
+
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch products from the backend API
+    axios.get(`${API_BASE}/`)  
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the products!", error);
+      }); 
+  }, []);
+
+    
+  return (  
     <>      
     {/* ========================= SECTION MAIN ========================= */}
     <section className="section-intro padding-y-sm">
@@ -30,81 +47,22 @@ export default function Home() {
         </header>{/* sect-heading */}
       
         <div className="row">
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/1.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Just another product name</a>
-                <div className="price mt-1">$179.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/2.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Some item name here</a>
-                <div className="price mt-1">$280.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/3.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Great product name here</a>
-                <div className="price mt-1">$56.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/4.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Just another product name</a>
-                <div className="price mt-1">$179.00</div> {/* price-wrap.// */} 
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/5.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Just another product name</a>
-                <div className="price mt-1">$179.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/6.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Some item name here</a>
-                <div className="price mt-1">$280.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/7.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Great product name here</a>
-                <div className="price mt-1">$56.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
-          <div className="col-md-3">
-            <div className="card card-product-grid">
-              <a href="./product-detail.html" className="img-wrap"> <img src="/assets/images/items/9.jpg" /> </a>
-              <figcaption className="info-wrap">
-                <a href="./product-detail.html" className="title">Just another product name</a>
-                <div className="price mt-1">$179.00</div> {/* price-wrap.// */}
-              </figcaption>
-            </div>
-          </div> {/* col.// */}
+          { products.map((product) => (       
+            <div className="col-md-3" key={product.id}>
+                <div className="card card-product-grid">
+                  <a href="#" className="img-wrap"> <img src={product.product_image} /> </a>
+                  <figcaption className="info-wrap">
+                    <a href="./product-detail.html" className="title">{product.product_name}</a>
+                    <div className="price mt-1">${product.price}</div> 
+                  </figcaption>
+                </div>
+            </div> 
+            ))
+       }        
         </div> {/* row.// */}
       </div>{/* container // */}
     </section>
+    
     </>
   );
 }

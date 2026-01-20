@@ -26,7 +26,7 @@ class RegisterUserView(generics.CreateAPIView):
     serializer_class = AccountsSerializer
 
     def post(self, request, *args, **kwargs):
-        print("Looking at the request data", request.data)
+        #print("Looking at the request data", request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -39,8 +39,7 @@ def googleLogin(request):
     token = request.data.get("access_token")
 
     if not token:
-        return JsonResponse({"detail": "Access token is required"}, status=400)
-    
+        return JsonResponse({"detail": "Access token is required"}, status=400)    
     # Verify the token with Google and retrieve user info
     try: 
        idInfo = google_id_token.verify_oauth2_token(
@@ -63,12 +62,25 @@ def googleLogin(request):
     if not email_verified:
         return JsonResponse({"detail": "Email not verified by Google"}, status=400)
     
+    # extract email address
+    base = email.split('@')[0]
+    base = base.split('.')[0]
+    username = base.lower().capitalize()
+    print("Generated username:", username)
+    # ensure unique username
+    candidate = username
+    counter = 1
+    while Accounts.objects.filter(username=candidate).exists():
+        counter += 1
+        candidate = f"{username}{counter}"
+    username = candidate
+        
     user, created = Accounts.objects.get_or_create(
         email=email,
         defaults={
             "first_name": given_name,
             "last_name": family_name,
-            "username": email.split("@")[0],
+            "username": username,
             'is_active': True,
         }
     ) 
@@ -84,9 +96,16 @@ def googleLogin(request):
      # Issue your JWT tokens
     refresh = RefreshToken.for_user(user)
     return JsonResponse({
-        "access": str(refresh.access_token),
-        "refresh": str(refresh),
-        "email": user.email,
-        "user_id": user.id,
-    }, status=status.HTTP_200_OK)
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "username": user.username
+            },
+        
+        }, status=status.HTTP_200_OK,
+    )
 

@@ -4,9 +4,11 @@ import Register from "./pages/Register.jsx";
 import Header from "./pages/Header.jsx";
 import Footer from "./pages/Footer.jsx";
 import Login from "./pages/Login.jsx";
+import Store from "./pages/Store.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import AuthProvider from "./AuthProvider.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+
 
 
 export default function App() {
@@ -20,6 +22,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/store" element={<Store />} />
 
         {/* protected routes */}
         <Route element={<ProtectedRoute />}>

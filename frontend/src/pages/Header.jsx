@@ -7,12 +7,13 @@ import { useContext } from "react";
 export default function Header() {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
     navigate("/login", { replace: true });
   }
@@ -65,7 +66,7 @@ export default function Header() {
                 </div>
               </div>  {/* category-wrap.// */}
             </div> {/* col.// */}
-            <a href="./store.html" className="btn btn-outline-primary">Store</a>
+            <Link to="/store" className="btn btn-outline-primary">Store</Link>
             <div className="col-lg  col-md-6 col-sm-12 col">
               <form action="#" className="search">
                 <div className="input-group w-100">
@@ -82,7 +83,7 @@ export default function Header() {
             <div className="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
               <div className="d-flex justify-content-end mb-3 mb-lg-0">
                 <div className="widget-header">
-                  <small className="title text-muted">Welcome Joe!</small>
+                  <small className="title text-muted">{isLoggedIn ? `Welcome ${user.username}!` : "Welcome Guest!"}</small>
                   <div> 
                     { isLoggedIn ? (
                       <button type="button" className="btn btn-outline-danger text-danger" onClick={logout}>Logout</button>

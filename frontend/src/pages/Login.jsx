@@ -25,7 +25,8 @@ export default function Login() {
 
   const loginUser = async (e) => {
     e.preventDefault();
-    setLoading(true);   
+    setLoading(true);  
+
     // get user data
     const userData = {      
       email: email,
@@ -34,12 +35,9 @@ export default function Login() {
 
     try {
       const response = await axios.post(`${API_BASE}/api/v1/accounts/token/`, userData);
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
-      
+      login(response.data.access, response.data.refresh, response.data.user || null)          
       setSuccess(true);
-      setErrors({});
-      setIsLoggedIn(true);
+      setErrors({});      
       navigate("/dashboard");
     }
     catch (error) {
@@ -56,28 +54,21 @@ export default function Login() {
 
   // 👇 THIS function lives here
   async function handleGoogleSuccess(credentialResponse) {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/auth/google/`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          access_token: credentialResponse.credential,
-        }),
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Google auth failed", data);
-      return;
+    try {
+      const res = await axios.post(
+        `${API_BASE}/api/auth/google/`, 
+        {access_token: credentialResponse.credential}, 
+        {headers: { "Content-Type": "application/json" }}
+      );
+      const data = res.data;
+      console.log("Google auth successful", data);
+      login(data.access, data.refresh, data.user || null);
+      navigate("/dashboard", { replace: true });
     }
-
-    //console.log("Google auth successful", data);
-
-    login(data.access, data.refresh);
-    navigate("/dashboard", { replace: true });
+    catch(err){
+      const data = err.response?.data;
+      console.error("Google auth failed", data || err.message);
+    }    
   }
     
   return (
@@ -111,10 +102,11 @@ export default function Login() {
             
         </form>
         </div> {/*<!-- card-body.// -->*/}
-      </div> {/*<!-- card .// -->*/}
 
-     <p className="text-center mt-4">Don't have account? <Link to="/register">Sign up</Link></p>
-     <GoogleLoginButton onSuccess={handleGoogleSuccess} />
+        <p className="text-center mt-4">Don't have account? <Link to="/register">Sign up</Link></p>
+        <GoogleLoginButton onSuccess={handleGoogleSuccess} />
+      </div> {/*<!-- card .// -->*/}
+     
      <br /><br /> 
     </section>    
     </>
