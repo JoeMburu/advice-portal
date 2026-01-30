@@ -78,6 +78,7 @@ DJ_REST_AUTH = {
 
 MIDDLEWARE = [   
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",    
     "django.middleware.common.CommonMiddleware",
@@ -218,6 +219,7 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_STORE_TOKENS = True
 GOOGLE_OAUTH_CLIENT_ID = config("GOOGLE_OAUTH_CLIENT_ID")
 
+
 # Cloudinary configuration
 ENVIRONMENT = config('DJANGO_ENV', default='production')
 if ENVIRONMENT == 'development':
@@ -247,3 +249,10 @@ else:
             "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
         },
     }
+
+    # MEDIA_URL is mostly irrelevant for Cloudinary, but harmless:
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
