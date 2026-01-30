@@ -49,9 +49,9 @@ export default function Home() {
         <div className="row">
           { products.map((product) => (       
             <div className="col-md-3" key={product.id}>
-                <div className="card card-product-grid">
-                  <a href="#" className="img-wrap"> <img src={product.product_image} /> </a>
-                  {  console.log("image: ", product.product_image) }
+                <div className="card card-product-grid">                  
+                  <Link to={`/store/product/${product.slug}`} className="img-wrap"> <img src={product.product_image} /> </Link>
+                 
                   <figcaption className="info-wrap">
                     <a href="./product-detail.html" className="title">{product.product_name}</a>
                     <div className="price mt-1">${product.price}</div> 
@@ -59,7 +59,7 @@ export default function Home() {
                 </div>
             </div> 
             ))
-        }        
+          }        
         </div> {/* row.// */}
       </div>{/* container // */}
     </section>

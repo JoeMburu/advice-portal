@@ -39,7 +39,7 @@ export default function Login() {
       const profile = await axios.get(`${API_BASE}/api/v1/accounts/me/`, {
         headers: { Authorization: `Bearer ${response.data.access}` },
       });
-      console.log("Login successful:", profile.data);
+      //console.log("Login successful:", profile.data);
       login(response.data.access, response.data.refresh, profile.data);
       setIsLoggedIn(true);
       setSuccess(true);
@@ -111,10 +111,11 @@ export default function Login() {
 
         <p className="text-center mt-4">Don't have account? <Link to="/register">Sign up</Link></p>
         <GoogleLoginButton onSuccess={handleGoogleSuccess} />
-      </div> {/*<!-- card .// -->*/}
+      </div> 
      
      <br /><br /> 
-    </section>    
+    </section>   { success && isLoggedIn} 
     </>
   );
 }
+// console.log("GOOGLE CLIENT ID:", import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID);

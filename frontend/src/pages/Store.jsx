@@ -5,6 +5,8 @@ import axios from "axios";
 import {React, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+import { useLocation } from "react-router-dom";
+
 export default function Store() {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
@@ -17,10 +19,21 @@ export default function Store() {
   const categorySlug = searchParams.get("category"); // null or string  
   
   const navigate = useNavigate(); 
+
+
+
+ 
+
+  const location = useLocation();
+  console.log("LOCATION.PATHNAME:", location.pathname);
+  console.log("LOCATION.SEARCH:", location.search);
+  console.log("CATEGORY SLUG:", categorySlug);
+  
+
   
   
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = async () => {      
       let url;
       if (categorySlug === null) {
         // show all products
@@ -29,8 +42,9 @@ export default function Store() {
         // filter by category
         url = `${API_BASE}/store/products/category/${categorySlug}/`;
       }
-
+      console.log("CATEGORY SLUG:", categorySlug);
       const res = await axios.get(url);
+      console.log("gsgsggs: ", res.data)
       setProducts(res.data);
     };
 
@@ -38,14 +52,13 @@ export default function Store() {
   }, [API_BASE, categorySlug]); // runs when category changes
 
     // categories effect stays separate
-  useEffect(() => {
+  useEffect(() => {      
     axios
       .get(`${API_BASE}/store/products/categories/`)
       .then((res) => setCategories(res.data));
   }, [API_BASE]);
 
-
-  const onSelectCategoryClick = (slug) => {   
+   const onSelectCategoryClick = (slug) => {   
     navigate(`/store?category=${slug}`);
     // Fetch products by category from the backend API   
     axios.get(`${API_BASE}/store/products/category/${slug}/`)
@@ -55,14 +68,21 @@ export default function Store() {
       .catch((error) => {
         console.error(`There was an error fetching products in category ${slug}!`, error);
       });
+  };
 
-  }
+  const onSelectAllCategories = () => {   
+    navigate(`/store`);
+    // Fetch all products from the backend API   
+    axios.get(`${API_BASE}/store/products/`)
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching all products!", error);
+      });
+  }; 
 
-  
-  
-
-
-    
+      
   return (  
     <> 
     <section className="section-pagetop bg"> {/* Top section */}
@@ -86,7 +106,8 @@ export default function Store() {
                 <div className="filter-content collapse show" id="collapse_1" style={{}}>
                   <div className="card-body">                  
                     <ul className="list-menu">
-                      <li><button className="btn btn-link" onClick={() => navigate("/store")}>All</button></li>
+                      <li><button className="btn btn-link" onClick={() => onSelectAllCategories()}>All</button></li>
+                      {/* <li><Link className="btn btn-link" to="/store">All</Link></li> */}
                       {categories.map((category) => (
                         <li key={category.id}>
                           <button 

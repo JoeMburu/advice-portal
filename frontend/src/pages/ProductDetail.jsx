@@ -40,8 +40,7 @@ export default function ProductDetail() {
                   <div className="price h4">{product.price}</div> 
                 </div> 
                 <p>{product.description}</p>
-                <hr />              
-                
+                <hr />                 
                 <a href="./product-detail.html" className="btn  btn-primary"> <span className="text">Add to cart</span> <i className="fas fa-shopping-cart"></i>  </a>
               </article> 
             </main> 

@@ -24,6 +24,8 @@ class CategoryListView(ListAPIView): # Get all product categories
 class ProductsByCategoryView(ListAPIView): # Get products by category
   serializer_class = ProductsSerializer
   permission_classes = [AllowAny]
+  def get_queryset(self):
+      return Product.objects.filter(category__slug=self.kwargs["category_slug"], is_available=True)
 
 
 

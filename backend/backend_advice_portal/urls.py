@@ -35,8 +35,6 @@ urlpatterns = [
     path("api/auth/", include("accounts.urls")),
 
     path("store/", include("store.urls")),
- 
-
-
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
