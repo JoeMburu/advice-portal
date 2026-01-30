@@ -7,7 +7,7 @@ class AccountsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Accounts
-        fields = ['first_name', 'last_name', 'email',  'phone_number', 'address', 'password', 'password_confirm']
+        fields = ['first_name', 'last_name', 'username', 'email',  'phone_number', 'address', 'password', 'password_confirm', 'is_active']
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:

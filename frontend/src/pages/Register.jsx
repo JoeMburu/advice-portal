@@ -22,12 +22,15 @@ export default function Register() {
   const registerUser = async (e) => {
     e.preventDefault();
     setLoading(true);   
+    // get username from fist_name
+    const cleanedFirstName = first_name.trim();
+    const username = cleanedFirstName.charAt(0).toUpperCase() + cleanedFirstName.slice(1);
     // get user data
     const userData = {
       first_name: first_name,      
       last_name: last_name,      
       email: email,
-      username: first_name[0] + first_name.slice(1),
+      username,
       phone_number: phone,
       address: address,
       password: password,
@@ -35,7 +38,7 @@ export default function Register() {
     };
 
     try {
-      const response = await axios.post(`${API_BASE}/api/v1/accounts/register/`, userData);
+      const response = await axios.post(`${API_BASE}/api/v1/accounts/register/`, userData, {headers: {'Content-Type': 'application/json'}});
       console.log("Registration successful:", response.data);
       setSuccess(true);
       setErrors({});

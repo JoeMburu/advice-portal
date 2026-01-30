@@ -8,8 +8,14 @@ const AuthProvider = ({children}) => {
     !!localStorage.getItem('access_token')
   );
   const [user, setUser] = useState(() => {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
+    const userData = localStorage.getItem('user');    
+    if (!userData || userData === 'undefined') return null;
+    try {
+      return JSON.parse(userData);
+    } catch {
+      return null;
+    }
+    
   });
 
   const login = (access, refresh, user) => {

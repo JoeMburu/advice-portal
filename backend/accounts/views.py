@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import AccountsSerializer
+
 from .models import Accounts
 from dj_rest_auth.registration.views import SocialLoginView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -23,15 +24,19 @@ from google.auth.transport import requests as google_requests
 
 
 class RegisterUserView(generics.CreateAPIView):
+    queryset = Accounts.objects.all()
     serializer_class = AccountsSerializer
+    permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        #print("Looking at the request data", request.data)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response({"message": "Account created successfully", "user": serializer.data, "email": serializer.data.get("email")}, status=status.HTTP_201_CREATED)
-
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data["is_active"] = True
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)        
+        instance = serializer.save()
+        data = self.get_serializer(instance).data
+        
+        return Response({"message": "Account created successfully", "user": data, "email": data.get("email")}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -66,7 +71,6 @@ def googleLogin(request):
     base = email.split('@')[0]
     base = base.split('.')[0]
     username = base.lower().capitalize()
-    print("Generated username:", username)
     # ensure unique username
     candidate = username
     counter = 1
@@ -109,3 +113,8 @@ def googleLogin(request):
         }, status=status.HTTP_200_OK,
     )
 
+class MeView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AccountsSerializer
+    def get_object(self):
+        return self.request.user

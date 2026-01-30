@@ -7,6 +7,7 @@ import Login from "./pages/Login.jsx";
 import Store from "./pages/Store.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import AuthProvider from "./AuthProvider.jsx";
+import ProductDetail from "./pages/ProductDetail.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
 
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/store" element={<Store />} />
+        <Route path="/product/:slug" element={<ProductDetail />} />
 
         {/* protected routes */}
         <Route element={<ProtectedRoute />}>

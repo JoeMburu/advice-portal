@@ -7,7 +7,6 @@ import GoogleLoginButton from "./GoogleLoginButton.jsx";
 import { GoogleLogin } from "@react-oauth/google";
 
 
-
 export default function Login() { 
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
@@ -34,8 +33,15 @@ export default function Login() {
     };
 
     try {
-      const response = await axios.post(`${API_BASE}/api/v1/accounts/token/`, userData);
-      login(response.data.access, response.data.refresh, response.data.user || null)          
+      const response = await axios.post(`${API_BASE}/api/v1/accounts/token/`, userData, {headers: {'Content-Type': 'application/json'}});    
+      login(response.data.access, response.data.refresh, null);   
+      // Log in successful, now get user info
+      const profile = await axios.get(`${API_BASE}/api/v1/accounts/me/`, {
+        headers: { Authorization: `Bearer ${response.data.access}` },
+      });
+      console.log("Login successful:", profile.data);
+      login(response.data.access, response.data.refresh, profile.data);
+      setIsLoggedIn(true);
       setSuccess(true);
       setErrors({});      
       navigate("/dashboard");

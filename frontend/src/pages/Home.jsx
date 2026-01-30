@@ -42,7 +42,7 @@ export default function Home() {
     <section className="section-name padding-y-sm">
       <div className="container">     
         <header className="section-heading">
-          <a href="./store.html" className="btn btn-outline-primary float-right">See all</a>
+          <Link to="/store" className="btn btn-outline-primary float-right">See all</Link>
           <h3 className="section-title">Popular products</h3>
         </header>{/* sect-heading */}
       
@@ -51,6 +51,7 @@ export default function Home() {
             <div className="col-md-3" key={product.id}>
                 <div className="card card-product-grid">
                   <a href="#" className="img-wrap"> <img src={product.product_image} /> </a>
+                  {  console.log("image: ", product.product_image) }
                   <figcaption className="info-wrap">
                     <a href="./product-detail.html" className="title">{product.product_name}</a>
                     <div className="price mt-1">${product.price}</div> 
@@ -58,7 +59,7 @@ export default function Home() {
                 </div>
             </div> 
             ))
-       }        
+        }        
         </div> {/* row.// */}
       </div>{/* container // */}
     </section>
