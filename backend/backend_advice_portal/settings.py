@@ -42,28 +42,28 @@ AUTH_USER_MODEL = "accounts.Accounts"
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "cloudinary",
-    "cloudinary_storage",
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",   
-    "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.facebook",
-    "rest_framework.authtoken",
-    "dj_rest_auth",    
-    "corsheaders",
-    "rest_framework",
-    "rest_framework_simplejwt",   
-    "accounts",
-    "category",
-    "store",
+  "django.contrib.admin",
+  "django.contrib.auth",
+  "django.contrib.contenttypes",
+  "django.contrib.sessions",
+  "django.contrib.messages",
+  "django.contrib.staticfiles",
+  "cloudinary",
+  "cloudinary_storage",
+  "django.contrib.sites",
+  "allauth",
+  "allauth.account",
+  "allauth.socialaccount",   
+  "allauth.socialaccount.providers.google",
+  "allauth.socialaccount.providers.facebook",
+  "rest_framework.authtoken",
+  "dj_rest_auth",    
+  "corsheaders",
+  "rest_framework",
+  "rest_framework_simplejwt",   
+  "accounts",
+  "category",
+  "store",
 ]
 SITE_ID = 1
 
@@ -77,17 +77,16 @@ DJ_REST_AUTH = {
 
 
 MIDDLEWARE = [   
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",    
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",    
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
-    
+  "django.middleware.security.SecurityMiddleware",
+  "whitenoise.middleware.WhiteNoiseMiddleware",
+  "django.contrib.sessions.middleware.SessionMiddleware",
+  "corsheaders.middleware.CorsMiddleware",    
+  "django.middleware.common.CommonMiddleware",
+  "django.middleware.csrf.CsrfViewMiddleware",
+  "django.contrib.auth.middleware.AuthenticationMiddleware",    
+  "django.contrib.messages.middleware.MessageMiddleware",
+  "django.middleware.clickjacking.XFrameOptionsMiddleware",
+  "allauth.account.middleware.AccountMiddleware",    
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -95,73 +94,69 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWS_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-     "http://localhost:5173",
-    "https://advice-web-58dea500cb2d.herokuapp.com",
+  "http://localhost:5173",
+  "https://advice-web-58dea500cb2d.herokuapp.com",
 ]
 
 ROOT_URLCONF = "backend_advice_portal.urls"
 
 TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
+  {
+    "BACKEND": "django.template.backends.django.DjangoTemplates",
+    "DIRS": [],
+    "APP_DIRS": True,
+    "OPTIONS": {
+        "context_processors": [
+            "django.template.context_processors.request",
+            "django.contrib.auth.context_processors.auth",
+            "django.contrib.messages.context_processors.messages",
+        ],
     },
+  },
 ]
 
 WSGI_APPLICATION = "backend_advice_portal.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config (
-        default=config("DATABASE_URL"), 
-    )
+  "default": dj_database_url.config (
+      default=config("DATABASE_URL"), 
+  )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+  {
+    "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+  },
+  {
+    "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+  },
+  {
+    "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+  },
+  {
+    "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+  },
 ]
 
 REST_FRAMEWORK = {   
-    'DEFAULT_AUTHENTICATION_CLASSES': (       
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",   
-    ],  
+  'DEFAULT_AUTHENTICATION_CLASSES': (       
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+  ),
+  "DEFAULT_PERMISSION_CLASSES": [
+    "rest_framework.permissions.IsAuthenticated",   
+  ],  
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # in minutes
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),  # in days   
+  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # in minutes
+  'REFRESH_TOKEN_LIFETIME': timedelta(days=3),  # in days   
 }
-
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -174,7 +169,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -186,74 +180,58 @@ STATIC_ROOT = BASE_DIR / 'static'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+  'django.contrib.auth.backends.ModelBackend',
+  'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 LOGIN_REDIRECT_URL = '/callback/'
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['email', 'profile'],
-        'AUTH_PARAMS': { 'access_type': 'online'}, 
-        'OAUTH_PKCE_ENABLED': True,
-        'FETCH_USER_INFO': True,
-    },
-    # 'facebook': {
-    #     'METHOD': 'oauth2',
-    #     'SCOPE': ['email', 'public_profile'],
-    #     'FIELDS': [
-    #         'id',
-    #         'email',
-    #         'name',
-    #         'first_name',
-    #         'last_name',
-    #         'verified',
-    #         'locale',
-    #         'timezone',
-    #         'link',  
-    #     ]   
-    # }
+  'google': {    
+    'SCOPE': ['email', 'profile'],
+    'AUTH_PARAMS': { 'access_type': 'online'}, 
+    'OAUTH_PKCE_ENABLED': True,
+    'FETCH_USER_INFO': True,
+  },
+  # 'facebook': {
+  #     'METHOD': 'oauth2',
+  #     'SCOPE': ['email', 'public_profile'],
+  #     'FIELDS': [
+  #         'id',
+  #         'email',
+  #         'name',
+  #         'first_name',
+  #         'last_name',
+  #         'verified',
+  #         'locale',
+  #         'timezone',
+  #         'link',  
+  #     ]   
+  # }
 }
 
 SOCIALACCOUNT_STORE_TOKENS = True
 GOOGLE_OAUTH_CLIENT_ID = config("GOOGLE_OAUTH_CLIENT_ID")
 
-
 # Cloudinary configuration
-ENVIRONMENT = config('DJANGO_ENV', default='production')
-if ENVIRONMENT == 'development':
-   # Local file storage for media in development
-    STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-        },
-    }
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR / "media"
-else:
-    CLOUDINARY_STORAGE = {
-        "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME"),
-        "API_KEY": config("CLOUDINARY_API_KEY"),
-        "API_SECRET": config("CLOUDINARY_API_SECRET"),
-    }
+CLOUDINARY_STORAGE = {
+  "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME"),
+  "API_KEY": config("CLOUDINARY_API_KEY"),
+  "API_SECRET": config("CLOUDINARY_API_SECRET"),
+} 
 
-    STORAGES = {
-        "default": {
-            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
-        },
-    }
+STORAGES = {
+  "default": {
+    "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+  },
+  "staticfiles": {
+    "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+  },
+}
+CLOUDINARY_STORAGE["SECURE"] = True
 
-    # MEDIA_URL is mostly irrelevant for Cloudinary, but harmless:
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"   # optional / mostly irrelevant now
+MEDIA_ROOT = BASE_DIR / "media"  # optional
 
 

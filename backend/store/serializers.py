@@ -3,6 +3,8 @@ from .models import Product
 from category.models import Category
 
 class ProductsSerializer(serializers.ModelSerializer):
+    product_image = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
         fields = '__all__' 
@@ -10,9 +12,7 @@ class ProductsSerializer(serializers.ModelSerializer):
     def get_product_image(self, obj):
         if not obj.product_image:
             return ""
-        request = self.context.get("request")
-        url = obj.product_image.url  # dev: /media/photos/..  prod: https://res.cloudinary.com/...
-        return request.build_absolute_uri(url) if request else url 
+        return obj.product_image.url
     
     
 class CategorySerializer(serializers.ModelSerializer):
