@@ -50,10 +50,10 @@ export default function Home() {
           { products.map((product) => (       
             <div className="col-md-3" key={product.id}>
                 <div className="card card-product-grid">                  
-                  <Link to={`/store/product/${product.slug}`} className="img-wrap"> <img src={product.product_image} /> </Link>
+                  <Link to={`/product/${product.slug}`} className="img-wrap"> <img src={product.product_image} /> </Link>
                  
                   <figcaption className="info-wrap">
-                    <a href="./product-detail.html" className="title">{product.product_name}</a>
+                    <Link to={`/product/${product.slug}`} className="title">{product.product_name}</Link>
                     <div className="price mt-1">${product.price}</div> 
                   </figcaption>
                 </div>
