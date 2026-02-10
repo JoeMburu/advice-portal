@@ -1,7 +1,8 @@
-import {useState, createContext} from 'react'
+import {useState } from 'react'
+import { AuthContext } from './authContext';
 
 // Create context
-const AuthContext = createContext();
+//const AuthContext = createContext();
 
 const AuthProvider = ({children}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(

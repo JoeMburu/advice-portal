@@ -1,17 +1,16 @@
 import { Link, useNavigate  } from "react-router-dom";
 import { AuthContext } from "../AuthProvider";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState} from "react";
 import axios from "axios";
 
 
-
-
-export default function Header() {
+export default function Header({ cartQuantity }) {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
   const { isLoggedIn, setIsLoggedIn, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
+  
 
   const logout = () => {
     localStorage.removeItem("access_token");
@@ -30,6 +29,7 @@ export default function Header() {
       });
   }, [API_BASE]);
 
+   
   return (
     <>
     <header className="section-header">
@@ -106,15 +106,15 @@ export default function Header() {
                     
                   </div>
                 </div>
-                <a href="./cart.html" className="widget-header pl-3 ml-3">
+                <Link to="/cart" className="widget-header pl-3 ml-3">
                   <div className="icon icon-sm rounded-circle border"><i className="fa fa-shopping-cart"></i></div>
-                  <span className="badge badge-pill badge-danger notify">0</span>
-                </a>
-              </div> {/*<!-- widgets-wrap.// -->*/}
-            </div> {/* col.// */}
-          </div> {/* row.// */}
-        </div> {/* container.// */}
-      </section> {/* header-main .// */}
+                  <span className="badge badge-pill badge-danger notify">{cartQuantity}</span>
+                </Link>
+              </div> 
+            </div> 
+          </div> 
+        </div> 
+      </section> 
     </header> 
     </>
   );

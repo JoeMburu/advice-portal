@@ -1,7 +1,5 @@
 from django.urls import path, include
 from .views import RegisterUserView, googleLogin, MeView
-
-
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,

@@ -20,10 +20,6 @@ export default function Store() {
   
   const navigate = useNavigate(); 
 
-
-
- 
-
   const location = useLocation();
   console.log("LOCATION.PATHNAME:", location.pathname);
   console.log("LOCATION.SEARCH:", location.search);

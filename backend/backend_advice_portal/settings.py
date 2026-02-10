@@ -64,6 +64,7 @@ INSTALLED_APPS = [
   "accounts",
   "category",
   "store",
+  "cart",
 ]
 SITE_ID = 1
 
@@ -77,10 +78,10 @@ DJ_REST_AUTH = {
 
 
 MIDDLEWARE = [   
+  "corsheaders.middleware.CorsMiddleware", 
   "django.middleware.security.SecurityMiddleware",
   "whitenoise.middleware.WhiteNoiseMiddleware",
-  "django.contrib.sessions.middleware.SessionMiddleware",
-  "corsheaders.middleware.CorsMiddleware",    
+  "django.contrib.sessions.middleware.SessionMiddleware",   
   "django.middleware.common.CommonMiddleware",
   "django.middleware.csrf.CsrfViewMiddleware",
   "django.contrib.auth.middleware.AuthenticationMiddleware",    
@@ -89,14 +90,17 @@ MIDDLEWARE = [
   "allauth.account.middleware.AccountMiddleware",    
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOWS_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "https://advice-web-58dea500cb2d.herokuapp.com",
 ]
+
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True  # required when SameSite=None (needs HTTPS)
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = "backend_advice_portal.urls"
 
@@ -234,4 +238,4 @@ CLOUDINARY_STORAGE["SECURE"] = True
 MEDIA_URL = "/media/"   # optional / mostly irrelevant now
 MEDIA_ROOT = BASE_DIR / "media"  # optional
 
-
+SESSION_ENGINE = "django.contrib.sessions.backends.db"

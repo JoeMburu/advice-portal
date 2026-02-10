@@ -1,14 +1,26 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate  } from "react-router-dom";
 import {React, useState, useEffect } from "react";
 import axios from "axios";
 
-
-
-export default function ProductDetail() {  
+export default function ProductDetail({onRefreshCart}) {  
   const API_BASE = import.meta.env.VITE_API_URL; 
-
+  const navigate = useNavigate();
   const { slug } = useParams();  
   const [product, setProduct] = useState(null);
+
+
+  const authConfig = () => {
+    const token = localStorage.getItem("access_token");
+
+  return token
+    ? {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      }
+    : {
+        withCredentials: true,
+      };
+  };  
 
   useEffect(() => {
     async function fetchProduct() {
@@ -19,6 +31,24 @@ export default function ProductDetail() {
   }, [slug, API_BASE]);
 
   if (!product) return <div>Loading...</div>;
+
+  const handleAddToCart = async (productId) => {
+    axios.defaults.withCredentials = true;
+    await axios.post(`${API_BASE}/cart/add/${productId}/`, null, 
+      authConfig()
+      
+    ).then(() => {
+      onRefreshCart();
+      navigate("/cart", { replace: true });
+    })
+
+
+    
+
+
+    
+    
+  }
   
   return (
     <>    
@@ -41,7 +71,7 @@ export default function ProductDetail() {
                 </div> 
                 <p>{product.description}</p>
                 <hr />                 
-                <a href="./product-detail.html" className="btn  btn-primary"> <span className="text">Add to cart</span> <i className="fas fa-shopping-cart"></i>  </a>
+                <button className="btn  btn-primary" onClick={() => handleAddToCart(product.id)}> <span className="text">Add to cart</span> <i className="fas fa-shopping-cart"></i>  </button>
               </article> 
             </main> 
           </div>

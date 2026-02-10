@@ -1,7 +1,9 @@
+from urllib import request
 from django.conf import settings
 from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.response import Response
+from urllib3 import request
 from .serializers import AccountsSerializer
 
 from .models import Accounts
