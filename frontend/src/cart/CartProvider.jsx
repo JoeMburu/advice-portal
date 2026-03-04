@@ -82,6 +82,16 @@ const CartProvider = ({ children }) => {
     return cart.items.reduce((sum, i) => sum + Number(i.subtotal || 0), 0);
   }, [cart]);
 
+  const vatAmount = useMemo(() => {
+    if (!cart) return 0;
+    return cart.vat_amount;
+  }, [cart]);
+
+  const grandTotal = useMemo(() => {
+    if (!cart) return 0;
+    return cart.grand_total;
+  }, [cart]);
+
   // Load cart on app start, and when auth state changes (guest <-> logged in)
   useEffect(() => {
     // If you have auth init, avoid fetching before tokens/refresh settle
@@ -101,9 +111,11 @@ const CartProvider = ({ children }) => {
       clearCart,
       totalItems,
       totalAmount,
+      vatAmount,
+      grandTotal,
       isLoggedIn,
     }),
-    [cart, loading, error, fetchCart, totalItems, addToCart, removeFromCart, decreaseItem, clearCart, totalAmount, isLoggedIn]
+    [cart, loading, error, fetchCart, totalItems, addToCart, removeFromCart, decreaseItem, clearCart, totalAmount, isLoggedIn, vatAmount, grandTotal]
   );
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

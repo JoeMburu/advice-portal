@@ -13,7 +13,7 @@ export default function Cart() {
   
   const navigate = useNavigate(); 
   const { isLoggedIn } = useAuth();
-  const { cart, fetchCart, loading, addToCart, decreaseItem, removeFromCart } = useCart(); // Access cart context
+  const { cart, fetchCart, loading, addToCart, decreaseItem, removeFromCart, vatAmount, grandTotal, totalAmount } = useCart(); // Access cart context
   const { products } = useProducts(); // Access product context 
  //const [cartItems, setCartItems] = useState([]); // Local state for cart items
 
@@ -120,21 +120,21 @@ export default function Cart() {
               <div className="card-body">
                 <dl className="dlist-align">
                   <dt>Total price:</dt>
-                  <dd className="text-right">$69.97</dd>
+                  <dd className="text-right">${totalAmount.toFixed(2)}</dd>
                 </dl>
                 <dl className="dlist-align">
                   <dt>Tax:</dt>
-                  <dd className="text-right"> $10.00</dd>
+                  <dd className="text-right"> ${vatAmount.toFixed(2)}</dd>
                 </dl>
                 <dl className="dlist-align">
                   <dt>Total:</dt>
-                  <dd className ="text-right text-dark b"><strong>$59.97</strong></dd>
+                  <dd className ="text-right text-dark b"><strong>${grandTotal.toFixed(2)}</strong></dd>
                 </dl>
                 <hr />
                 <p className="text-center mb-3">
                   <img src="assets/images/misc/payments.png" height="26" />
                 </p>
-                <Link onClick={() => handleCheckout()} className="btn btn-primary btn-block"> Checkout </Link>
+                <Link to="/cart/checkout" className="btn btn-primary btn-block"> Checkout </Link>
                 <Link to="/store" className  ="btn btn-light btn-block">Continue Shopping</Link>
               </div>
             </div>

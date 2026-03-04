@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../auth/authContext.jsx";
-
 import GoogleLoginButton from "./GoogleLoginButton.jsx";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -20,13 +18,15 @@ export default function Login() {
   const { login, isLoggedIn } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const loginUser = async (e) => {
     e.preventDefault();
     setLoading(true);  
     try {     
       await login(email, password);        
-      navigate("/dashboard", { replace: true });
+      navigate(from, { replace: true });
     }
     catch {
       // handle error

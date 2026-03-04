@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny
 from .models import Cart, CartItem
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 def _cart_id(request):
     # Ensure a non-null session key    
@@ -122,12 +123,8 @@ def decrease_cart_item(request, product_id):
         status=status.HTTP_200_OK,
     )
 
-
-
-
-
 @api_view(['POST'])
-@permission_classes([AllowAny]) 
+@permission_classes([IsAuthenticated]) 
 def checkout(request):
     print("Checkout initiated")
     user = request.user if request.user.is_authenticated else None

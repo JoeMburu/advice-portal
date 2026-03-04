@@ -11,7 +11,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = CartItem
-    fields = '__all__'
+    fields = ['id', 'product_id', 'product_name', 'product_price', 'product_image', 'quantity', 'subtotal']
 
   def get_product_image(self, obj):
     if obj.product.product_image:
@@ -23,15 +23,23 @@ class CartItemSerializer(serializers.ModelSerializer):
   
 class CartSerializer(serializers.ModelSerializer):
   items = CartItemSerializer(many=True, read_only=True)
-  total = serializers.SerializerMethodField()
+  sub_total = serializers.SerializerMethodField()
+  vat_amount = serializers.SerializerMethodField()
+  grand_total = serializers.SerializerMethodField()
   total_qty = serializers.SerializerMethodField()
 
   class Meta:
     model = Cart
-    fields = '__all__'
+    fields = ['id', 'items', 'sub_total', 'vat_amount', 'grand_total', 'total_qty']
 
-  def get_total(self, obj):
+  def get_sub_total(self, obj):
     return obj.total
   
+  def get_vat_amount(self, obj):
+    return obj.vat_amount
+
+  def get_grand_total(self, obj):
+    return obj.grand_total
+
   def get_total_qty(self, obj):
     return sum(item.quantity for item in obj.items.all())

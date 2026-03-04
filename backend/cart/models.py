@@ -1,6 +1,11 @@
+from decimal import Decimal
+
 from django.db import models
 from accounts.models import Accounts
 from store.models import Product
+
+
+VAT_RATE = Decimal("0.24")
 
 
 
@@ -19,6 +24,19 @@ class Cart(models.Model):
   @property
   def total(self):
     return sum(item.subtotal for item in self.items.all())
+  
+  @property
+  def vat_rate(self):
+    return VAT_RATE
+  
+  @property
+  def vat_amount(self):
+    return self.total * self.vat_rate
+  
+  @property
+  def grand_total(self):
+    return self.total + self.vat_amount
+
     
 class CartItem(models.Model):  
   cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
