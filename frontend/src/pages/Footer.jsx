@@ -12,11 +12,11 @@ export default function Footer() {
       <div className="container">
         <section className="footer-bottom border-top row">
           <div className="col-md-2">
-            <p className="text-muted"> &copy; 2026 HelmiData </p>
+            <p className="text-muted"> &copy; 2026 Helmi Analytics </p>
           </div>
           <div className="col-md-8 text-md-center">
-            <span  className="px-2">info@pixsellz.io</span>
-            <span  className="px-2">+879-332-9375</span>
+            <span  className="px-2">joseph.afonne@helmianalytics.com</span>
+            <span  className="px-2">+358-44-016-3089</span>
             <span  className="px-2">Pihkatie 12 A 5, 65320, Vaasa</span>
           </div>
           <div className="col-md-2 text-md-right text-muted">

@@ -38,11 +38,6 @@ export default function Cart() {
     
   };
 
-  const handleCheckout = async () => {
-    // console.log("Proceeding to checkout...");
-    // console.log("Is user logged in?", isLoggedIn);
-  };
-
   return (
     <>    
     {cart?.items?.length > 0 ? (
