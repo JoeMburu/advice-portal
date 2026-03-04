@@ -8,11 +8,7 @@ export default function Dashboard() {
     
   return (
     <>
-    <section className="section-footer border-top">
-      <div className="container">
-        <h2>Dashboard</h2>
-      </div>{/* //container */}
-    </section>
+    <h1>Dashboard</h1>
     </>
   );
 }

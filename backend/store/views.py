@@ -34,6 +34,7 @@ class ProductDetailView(ListAPIView):
   permission_classes = [AllowAny]
 
   def get_queryset(self):
+      print(self.kwargs["slug"])
       return Product.objects.filter(slug=self.kwargs["slug"])
 
   

@@ -1,99 +1,67 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../authContext.jsx";
+
+import { useAuth } from "../auth/authContext.jsx";
+import { useCart } from "../cart/cartContext.jsx";
+import { useProducts } from "../product/productContext.jsx";
+//import axios from "axios";
 
 
-export default function Cart({onRefreshCart}) {
-  const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-  const [cart, setCart] = useState([]);
+
+export default function Cart() {
+  
   const navigate = useNavigate(); 
   const { isLoggedIn } = useAuth();
+  const { cart, fetchCart, loading, addToCart, decreaseItem, removeFromCart } = useCart(); // Access cart context
+  const { products } = useProducts(); // Access product context 
+ //const [cartItems, setCartItems] = useState([]); // Local state for cart items
 
-  const authConfig = () => {
-  const token = localStorage.getItem("access_token");
-  return token
-    ? {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      }
-    : {
-        withCredentials: true,
-      };
-};
+ useEffect(() => {
+  async function loadCart() {   
+    await fetchCart(); // Fetch cart data from context (which handles API call)    
+  }
 
-   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        const response = await axios.get(`${API_BASE}/cart/`, authConfig());
-
-        console.log("Fetched cart data:", response.data);
-        setCart(response.data.cart);
-     
-      } catch (err) {
-        console.error("STATUS: ", err.response?.status);
-        console.error("DATA: ", err.response?.data);
-      }     
-    };
-    fetchCart();
-   }, []);  
-    
-
-  const handleIncreaseQuantity = async (productId) => {    
-    await axios.post(`${API_BASE}/cart/add/${productId}/`, null, authConfig()).then(() => {
-      // Increase quantity on successful
-      axios.get(`${API_BASE}/cart/`, authConfig()).then((res) => {
-        setCart(res.data.cart);
-        onRefreshCart();
-      }); 
-    });  
+  loadCart();
+ }, [fetchCart]);  
+  
+  const handleDecreaseQuantity = async (productId) => {   
+    await decreaseItem(productId);       
   };
 
-  const handleDecreaseQuantity = async (productId) => {    
-    await axios.post(`${API_BASE}/cart/decrease_product/${productId}/`, null, authConfig()).then(() => {
-      // Decrease quantity on successful
-      axios.get(`${API_BASE}/cart/`, authConfig()).then((res) => {
-        setCart(res.data.cart);
-        onRefreshCart();
-      }); 
-    });     
+  const handleIncreaseQuantity = async (productId) => {  
+    await addToCart(productId);    
   };
 
   const handleRemoveItem = async (productId) => {
-    await axios.post(`${API_BASE}/cart/remove/${productId}/`, null, authConfig()).then(() => {
-      // Remove item on successful
-      axios.get(`${API_BASE}/cart/`, authConfig()).then((res) => {
-        setCart(res.data.cart);
-        onRefreshCart();
-      }); 
-    });
+    await removeFromCart(productId);   
     
   };
 
   const handleCheckout = async () => {
-    console.log("Proceeding to checkout...");
-    console.log("Is user logged in?", isLoggedIn);
+    // console.log("Proceeding to checkout...");
+    // console.log("Is user logged in?", isLoggedIn);
   };
 
   return (
     <>    
+    {cart?.items?.length > 0 ? (
     <section className="section-content padding-y bg">
-      <div className="container">        
+      <div className="container">               
         <div className="row">
           <aside className="col-lg-9">
             <div className="card">
               <table className="table table-borderless table-shopping-cart">
-                <thead className="text-muted">
-                  { cart["items"] && cart["items"].length > 0 && <tr className="small text-uppercase">
+                <thead className="text-muted">                  
+                  <tr className="small text-uppercase">
                     <th scope="col">Product</th>
                     <th scope="col" width="120">Quantity</th>
                     <th scope="col" width="120">Price</th>
                     <th scope="col" className="text-right" width="200"> </th>
-                  </tr>}
+                  </tr>                  
                 </thead>
                 <tbody>
-                  {cart?.items?.length > 0 ? (
+                  {cart?.items?.length > 0 && (
                     cart.items.map((item) => (
                       <tr key={item.id}>
                         <td>
@@ -142,10 +110,6 @@ export default function Cart({onRefreshCart}) {
                         </td>
                       </tr>
                     ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="text-center">Your cart is empty.</td>
-                    </tr>
                   )}
                 </tbody>
               </table>
@@ -177,7 +141,21 @@ export default function Cart({onRefreshCart}) {
           </aside> 
         </div> 
       </div> 
-    </section>
-  </>
+    </section>       
+    ) : (
+      <section className="section-content padding-y bg">
+        <div className="container text-center"> 
+          <div className="card">
+            <div className="card-body">
+              <h3>Your cart is empty</h3> 
+              <p className="text-muted">Looks like you haven't added anything to your cart yet.</p>
+              <Link to="/store" className="btn btn-primary">Start Shopping</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}   
+    
+    </>
   );
 }

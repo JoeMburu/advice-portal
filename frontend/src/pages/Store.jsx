@@ -1,81 +1,46 @@
 import { Link } from "react-router-dom";
 import.meta.env.VITE_GOOGLE_CLIENT_ID
 import.meta.env.VITE_API_URL
-import axios from "axios";
-import {React, useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
-import { useLocation } from "react-router-dom";
+import { useProducts } from "../product/productContext";
 
 export default function Store() {
   
   const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;    
-
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  
+  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID; 
   const [searchParams] = useSearchParams();
-  const categorySlug = searchParams.get("category"); // null or string  
-  
+  const categorySlug = searchParams.get("category"); // null or string    
+  //const [products, setProducts] = useState([]);
+  //const [categories, setCategories] = useState([]);
+  const { products, categories, fetchProducts, fetchProductCategories, fetchProductsByCategory, loadingProducts, loadingCategories } = useProducts();
+
   const navigate = useNavigate(); 
+  
+ 
 
-  const location = useLocation();
-  console.log("LOCATION.PATHNAME:", location.pathname);
-  console.log("LOCATION.SEARCH:", location.search);
-  console.log("CATEGORY SLUG:", categorySlug);
-  
-
-  
-  
   useEffect(() => {
-    const fetchProducts = async () => {      
-      let url;
-      if (categorySlug === null) {
-        // show all products
-        url = `${API_BASE}/store/products/`;
+    async function fetchStoreProducts() {
+      await fetchProductCategories(); // fetch categories first
+
+      if (categorySlug) {
+        await fetchProductsByCategory(categorySlug); // fetch products by category if category filter is applied
       } else {
-        // filter by category
-        url = `${API_BASE}/store/products/category/${categorySlug}/`;
+        await fetchProducts(); // fetch all products if no category filter
       }
-      console.log("CATEGORY SLUG:", categorySlug);
-      const res = await axios.get(url);
-      console.log("gsgsggs: ", res.data)
-      setProducts(res.data);
-    };
+     
+    }
 
-    fetchProducts();
-  }, [API_BASE, categorySlug]); // runs when category changes
+    fetchStoreProducts();
+  }, [categorySlug, fetchProducts, fetchProductCategories, fetchProductsByCategory]);
+ 
 
-    // categories effect stays separate
-  useEffect(() => {      
-    axios
-      .get(`${API_BASE}/store/products/categories/`)
-      .then((res) => setCategories(res.data));
-  }, [API_BASE]);
-
-   const onSelectCategoryClick = (slug) => {   
+  const onSelectedCategory = (slug) => {   
     navigate(`/store?category=${slug}`);
-    // Fetch products by category from the backend API   
-    axios.get(`${API_BASE}/store/products/category/${slug}/`)
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error(`There was an error fetching products in category ${slug}!`, error);
-      });
   };
 
   const onSelectAllCategories = () => {   
-    navigate(`/store`);
-    // Fetch all products from the backend API   
-    axios.get(`${API_BASE}/store/products/`)
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching all products!", error);
-      });
+    navigate(`/store`);    
   }; 
 
       
@@ -103,40 +68,18 @@ export default function Store() {
                   <div className="card-body">                  
                     <ul className="list-menu">
                       <li><button className="btn btn-link" onClick={() => onSelectAllCategories()}>All</button></li>
-                      {/* <li><Link className="btn btn-link" to="/store">All</Link></li> */}
+                      { loadingCategories && <p>Loading categories...</p> }                      
                       {categories.map((category) => (
                         <li key={category.id}>
                           <button 
                             className={`btn btn-link ${categorySlug === category.slug ? "fw-bold text-primary" : ""  }`} 
-                            onClick={() => onSelectCategoryClick(category.slug)}  > {category.category_name} </button>                          
+                            onClick={() => onSelectedCategory(category.slug)}  > {category.category_name} </button>                          
                         </li>
                       ))}                                     
                     </ul>
                   </div>               
                 </div> 
-              </article> {/* End of category filter */}
-
-              <article className="filter-group"> {/* Category filter */}
-                <header className="card-header">
-                  <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" className="">
-                    <i className="icon-control fa fa-chevron-down"></i>
-                    <h6 className="title">Sizes</h6>
-                  </a>                  
-		            </header>
-                {/* <div className="filter-content collapse show" id="collapse_1" style="">
-                  <div className="card-body">                  
-                    <ul className="list-menu">
-                    <li><a href="#">People  </a></li>
-                    <li><a href="#">Watches </a></li>
-                    <li><a href="#">Cinema  </a></li>
-                    <li><a href="#">Clothes  </a></li>
-                    <li><a href="#">Home items </a></li>
-                    <li><a href="#">Animals</a></li>
-                    <li><a href="#">People </a></li>
-                    </ul>
-                  </div>               
-                </div> */}
-              </article> {/* End of category filter */}
+              </article> {/* End of category filter */}           
               <article className="filter-group"> {/* Category filter */}
                 <header className="card-header">
                   <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" className="">
@@ -170,10 +113,11 @@ export default function Store() {
               </div>
             </header>
             <div className="row">
+              {loadingProducts && <p>Loading products...</p>}              
               {products.length > 0 ? (products.map((product, index) => (
                 <div className="col-md-4" key={product.id}>
                   <figure className="card card-product-grid">
-                    <Link className="img-wrap" to={`/product/${product.slug}`}>                    
+                    <Link className="img-wrap" to={`/product/${product.slug}`}>                                      
                       <img src={product.product_image} />                    
                     </Link>
                     <figcaption className="info-wrap">

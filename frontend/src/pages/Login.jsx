@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from "../AuthProvider.jsx";
+import { useAuth } from "../auth/authContext.jsx";
+
 import GoogleLoginButton from "./GoogleLoginButton.jsx";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -17,41 +17,21 @@ export default function Login() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { login, isLoggedIn } = useAuth();
 
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
 
   const loginUser = async (e) => {
     e.preventDefault();
     setLoading(true);  
-
-    // get user data
-    const userData = {      
-      email: email,
-      password: password,      
-    };
-
-    try {
-      const response = await axios.post(`${API_BASE}/api/v1/accounts/token/`, userData, {headers: {'Content-Type': 'application/json'}});    
-      login(response.data.access, response.data.refresh, null);   
-      // Log in successful, now get user info
-      const profile = await axios.get(`${API_BASE}/api/v1/accounts/me/`, {
-        headers: { Authorization: `Bearer ${response.data.access}` },
-      });
-      //console.log("Login successful:", profile.data);
-      login(response.data.access, response.data.refresh, profile.data);
-      setIsLoggedIn(true);
-      setSuccess(true);
-      setErrors({});      
-      navigate("/dashboard");
+    try {     
+      await login(email, password);        
+      navigate("/dashboard", { replace: true });
     }
-    catch (error) {
+    catch {
       // handle error
-      if (error.response && error.response.data) {
-        setErrors({ non_field_errors: ["Invalid credentials. Please try again."]});
-        setSuccess(false);
-      }     
+      setErrors({ non_field_errors: ["Invalid credentials. Please try again."]});
+      setSuccess(false);
     }
     finally {
       setLoading(false);
@@ -60,21 +40,22 @@ export default function Login() {
 
   // 👇 THIS function lives here
   async function handleGoogleSuccess(credentialResponse) {
-    try {
-      const res = await axios.post(
-        `${API_BASE}/api/auth/google/`, 
-        {access_token: credentialResponse.credential}, 
-        {headers: { "Content-Type": "application/json" }}
-      );
-      const data = res.data;
-      console.log("Google auth successful", data);
-      login(data.access, data.refresh, data.user || null);
-      navigate("/dashboard", { replace: true });
-    }
-    catch(err){
-      const data = err.response?.data;
-      console.error("Google auth failed", data || err.message);
-    }    
+      console.log("Google login successful, credential:", credentialResponse);
+    // try {
+    //   const res = await axios.post(
+    //     `${API_BASE}/api/auth/google/`, 
+    //     {access_token: credentialResponse.credential}, 
+    //     {headers: { "Content-Type": "application/json" }}
+    //   );
+    //   const data = res.data;
+    //   console.log("Google auth successful", data);
+    //   login(data.access, data.refresh, data.user || null);
+    //   navigate("/dashboard", { replace: true });
+    // }
+    // catch(err){
+    //   const data = err.response?.data;
+    //   console.error("Google auth failed", data || err.message);
+    // }    
   }
     
   return (
@@ -93,21 +74,21 @@ export default function Login() {
           </div>        
           <div className="form-group">
             <input type="email" className="form-control" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} />
-          </div> {/*<!-- form-group// -->*/}
+          </div> 
           <div className="form-group">
             <input type="password" className="form-control" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-          </div> {/*<!-- form-group// -->*/}  
+          </div>   
             
             <div className="form-group">
               <a href="#" className="float-right">Forgot password?</a> 
             
-            </div> {/*<!-- form-group form-check .// -->*/}
+            </div> 
             <div className="form-group">
                 <button type="submit" className="btn btn-primary btn-block" disabled={loading}> {loading ? "Logging in..." : "Login"} </button>
-            </div> {/*<!-- form-group// -->*/}     
+            </div>   
             
         </form>
-        </div> {/*<!-- card-body.// -->*/}
+        </div> 
 
         <p className="text-center mt-4">Don't have account? <Link to="/register">Sign up</Link></p>
         <GoogleLoginButton onSuccess={handleGoogleSuccess} />

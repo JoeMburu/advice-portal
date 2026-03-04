@@ -1,6 +1,16 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute() {
-  const access = localStorage.getItem("access_token"); // use your real key
-  return access ? <Outlet /> : <Navigate to="/login" replace />;
+import { useAuth } from "./auth/authContext";
+
+export default function ProtectedRoute({ children }) {
+  
+  const { isAuthenticated } = useAuth(); 
+  
+  return isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
+
+

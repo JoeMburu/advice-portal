@@ -38,8 +38,7 @@ def _get_or_create_cart(request) -> Cart:
     """
     user = request.user if request.user.is_authenticated else None    
     session_cart_id = _cart_id(request)
-    print("Session Cart ID:", session_cart_id)
-
+    
     # Fetch guest cart (if it exists)
     guest_cart = (
         Cart.objects.select_for_update()
@@ -53,9 +52,8 @@ def _get_or_create_cart(request) -> Cart:
         # Merge guest cart into user cart (once the user is authenticated)
         if guest_cart and guest_cart.id != user_cart.id:
             _merge_carts(guest_cart, user_cart)
-
         return user_cart
-
+    
     # Anonymous
     cart, created = Cart.objects.get_or_create(user=None, cart_id=session_cart_id)
     return cart
@@ -63,26 +61,28 @@ def _get_or_create_cart(request) -> Cart:
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def get_cart(request):
-    print("Retrieving cart")
-    user = request.user if request.user.is_authenticated else None
-    print("User:", user)    
-    cart = _get_or_create_cart(request)
-    print("Cart ID:", cart)
+def get_cart(request):  
+    print("Retrieving cart for user:", request.user if request.user.is_authenticated else "Anonymous") 
+    user = request.user if request.user.is_authenticated else None        
+    cart = _get_or_create_cart(request)    
     serializer = CartSerializer(cart)
     return Response({"message": "cart retrieved", "cart": serializer.data}, status=status.HTTP_200_OK)
-
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def add_to_cart(request, product_id):
     cart = _get_or_create_cart(request)
     product = get_object_or_404(Product, id=product_id)
+    qty = int(request.data.get("quantity", 1))  # default = 1
+    item, created = CartItem.objects.get_or_create(cart=cart, product=product) 
 
-    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    if not created:
-        item.quantity += 1
-        item.save()
+    if created:
+        item.quantity = qty
+    else:
+        item.quantity += qty
+
+    item.save()
+    print(item)
 
     serializer = CartSerializer(cart)
     return Response(
@@ -146,3 +146,6 @@ def checkout(request):
     # cart.items.all().delete()
     
     return Response({"message": "Checkout completed successfully post"}, status=status.HTTP_200_OK)
+
+
+# New view

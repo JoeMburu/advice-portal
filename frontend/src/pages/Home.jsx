@@ -1,30 +1,25 @@
 import { Link } from "react-router-dom";
 import.meta.env.VITE_GOOGLE_CLIENT_ID
 import.meta.env.VITE_API_URL
-import axios from "axios";
-import {React, useState, useEffect } from "react";
+import { useEffect } from "react";  
+import { useProducts } from "../product/productContext";
+
 
 
 
 export default function Home() {
   
-  const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
+  const API_BASE = import.meta.env.VITE_API_URL;  
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;    
-
-  const [products, setProducts] = useState([]);
+  //const [products, setProducts] = useState([]);
+  //const [loading, setLoading] = useState(true);
+  const { products, loadingProducts, fetchProducts } = useProducts();
 
   useEffect(() => {
-    // Fetch products from the backend API
-    axios.get(`${API_BASE}/`)  
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the products!", error);
-      }); 
-  }, []);
+    // Fetch popular products from the backend API
+    fetchProducts();         
+  }, [fetchProducts]);
 
-    
   return (  
     <>      
     {/* ========================= SECTION MAIN ========================= */}
@@ -47,7 +42,8 @@ export default function Home() {
         </header>{/* sect-heading */}
       
         <div className="row">
-          { products.map((product) => (       
+          {loadingProducts && <p>Loading products...</p>}
+          {products && products.map((product) => (       
             <div className="col-md-3" key={product.id}>
                 <div className="card card-product-grid">                  
                   <Link to={`/product/${product.slug}`} className="img-wrap"> <img src={product.product_image} /> </Link>

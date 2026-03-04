@@ -1,22 +1,22 @@
 import { Link, useNavigate  } from "react-router-dom";
-import { AuthContext } from "../AuthProvider";
-import { useContext, useEffect, useState} from "react";
+import { useAuth } from "../auth/authContext.jsx";
+import { useEffect, useState} from "react";
 import axios from "axios";
+import { useCart } from "../cart/cartContext.jsx";
 
 
-export default function Header({ cartQuantity }) {
+export default function Header() {
   
-  const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com
-  const { isLoggedIn, setIsLoggedIn, user } = useContext(AuthContext);
+  const API_BASE = import.meta.env.VITE_API_URL; // e.g. https://your-backend.herokuapp.com  
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
-  
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
+  const { isLoggedIn, logout, user } = useAuth ();
+ 
+  const { totalItems } = useCart();
+
+  const handleLogout = () => {    
+    logout();
     navigate("/login", { replace: true });
   }
 
@@ -27,7 +27,7 @@ export default function Header({ cartQuantity }) {
       .then((res) => {
         setCategories(res.data)        
       });
-  }, [API_BASE]);
+  }, []);
 
    
   return (
@@ -93,10 +93,10 @@ export default function Header({ cartQuantity }) {
             <div className="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
               <div className="d-flex justify-content-end mb-3 mb-lg-0">
                 <div className="widget-header">
-                  <small className="title text-muted">{isLoggedIn && user ? `Welcome ${user.username}!` : "Welcome Guest!"}</small>
+                  <small className="title text-muted">{isLoggedIn && user ? `Welcome ${user.firstName || user.username}!` : "Welcome Guest!"}</small>
                   <div> 
                     { isLoggedIn ? (
-                      <button type="button" className="btn btn-outline-danger text-danger" onClick={logout}>Logout</button>
+                      <button type="button" className="btn btn-outline-danger text-danger" onClick={() => handleLogout()}>Logout</button>
                     ): (
                       <>
                       <Link to="/login">Sign in</Link> <span className="dark-transp"> | </span>
@@ -108,7 +108,7 @@ export default function Header({ cartQuantity }) {
                 </div>
                 <Link to="/cart" className="widget-header pl-3 ml-3">
                   <div className="icon icon-sm rounded-circle border"><i className="fa fa-shopping-cart"></i></div>
-                  <span className="badge badge-pill badge-danger notify">{cartQuantity}</span>
+                  <span className="badge badge-pill badge-danger notify">{totalItems}</span>
                 </Link>
               </div> 
             </div> 
