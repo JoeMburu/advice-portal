@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 import Cart from "./pages/Cart.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import { OrderConfirmation } from "./pages/OrderConfirmation.jsx";
 
 import ProtectedRoute from "./ProtectedRoute.jsx";
 
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="/cart" element={<Cart />} />
       <Route path="/cart/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />   
+      <Route path="/order-confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
     </Routes>
     <Footer />
           

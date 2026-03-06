@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { ProductContext } from "./productContext.jsx";  
+import axiosInstance from '../api/axiosInstance.jsx';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
@@ -19,7 +20,7 @@ export default function ProductProvider({ children }) {
     setLoadingProducts(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_BASE}/store/products/`); // fetch all products
+      const res = await axiosInstance.get(`${API_BASE}/store/products/`); // fetch all products
       setProducts(res.data);
     } catch (e) {
       setError(e);
@@ -33,7 +34,7 @@ export default function ProductProvider({ children }) {
     setLoadingProducts(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_BASE}/store/products/category/${categorySlug}/`); // fetch products by category
+      const res = await axiosInstance.get(`${API_BASE}/store/products/category/${categorySlug}/`); // fetch products by category
       setProducts(res.data);
     } catch (e) {
       setError(e);
@@ -47,7 +48,7 @@ export default function ProductProvider({ children }) {
     setLoadingProduct(true);
     setError(null); 
     try {
-      const res = await axios.get(`${API_BASE}/store/product/${productSlug}/`); //
+      const res = await axiosInstance.get(`${API_BASE}/store/product/${productSlug}/`); //
       setProduct(res.data[0]); // Assuming the API returns a list with a single product
     } catch (e) {
       setError(e);
@@ -60,7 +61,7 @@ export default function ProductProvider({ children }) {
     setLoadingCategories(true);
     setError(null);
     try {
-      const res = await axios.get(`${API_BASE}/store/products/categories/`); // fetch product categories
+      const res = await axiosInstance.get(`${API_BASE}/store/products/categories/`); // fetch product categories
       setCategories(res.data);
     } catch (e) {     
       setError(e);

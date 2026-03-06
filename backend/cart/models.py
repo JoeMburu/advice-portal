@@ -5,7 +5,7 @@ from accounts.models import Accounts
 from store.models import Product
 
 
-VAT_RATE = Decimal("0.24")
+VAT_RATE = Decimal("0.10")
 
 
 

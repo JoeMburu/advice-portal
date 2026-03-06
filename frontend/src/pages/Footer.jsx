@@ -12,12 +12,12 @@ export default function Footer() {
       <div className="container">
         <section className="footer-bottom border-top row">
           <div className="col-md-2">
-            <p className="text-muted"> &copy; 2026 Helmi Analytics </p>
+            <p className="text-muted"> &copy; 2026 HelmiAnalytics </p>
           </div>
           <div className="col-md-8 text-md-center">
             <span  className="px-2">joseph.afonne@helmianalytics.com</span>
-            <span  className="px-2">+358-44-016-3089</span>
-            <span  className="px-2">Pihkatie 12 A 5, 65320, Vaasa</span>
+            <span  className="px-2">+358-00-000-0000</span>
+            <span  className="px-2"></span>
           </div>
           <div className="col-md-2 text-md-right text-muted">
             <i className="fab fa-lg fa-cc-visa"></i>

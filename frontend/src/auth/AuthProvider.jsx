@@ -3,6 +3,7 @@ import axiosInstance from '../api/axiosInstance.jsx';
 import { tokenStorage } from './tokenStorage';
 import { AuthContext } from './authContext.jsx';
 import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 
 
 function isExpired(accessToken) {
@@ -54,12 +55,10 @@ const AuthProvider = ({children}) => {
   const refreshAccess = async () => {
     const refresh = tokenStorage.getRefresh();
     if (!refresh) {
-      console.log("No refresh token available, cannot refresh access token.");  
-      logout();
-      return;
+      throw new Error("No refresh token available");
     }
 
-    const res = await axiosInstance.post(`${API_BASE}/api/v1/accounts/token/refresh/`, {refresh});
+    const res = await axios.post(`${API_BASE}/api/v1/accounts/token/refresh/`, {refresh});
     const newAccess = res.data.access;
     const newRefresh = res.data.refresh;
 
@@ -71,8 +70,7 @@ const AuthProvider = ({children}) => {
 
     setAccessToken(newAccess);
     setIsLoggedIn(true);
-    console.log("Access token refreshed successfully.");
-
+    
     return newAccess;
   }
 
@@ -82,33 +80,36 @@ const AuthProvider = ({children}) => {
       const refresh = tokenStorage.getRefresh();
       const user = tokenStorage.getUser();
 
+      if (user) {
+        const decodedUser = decoderUser(user);
+        setUser(decodedUser);        
+      }
+
       if (access && !isExpired(access)) {
         setAccessToken(access);
         setIsLoggedIn(true);        
-        setIsLoggedIn(true);
         console.log("Existing access token is valid, user logged in.");
         return;
-      }
-
-      if (user) {
-        const decodedUser = decoderUser(user);
-        setUser(decodedUser);
-        return;
-      }
+      }      
 
       if (refresh) {
         try {
-          await refreshAccess();          
-        } catch {
-          console.log("Failed to refresh access token on app load:");
-          logout();
+          await refreshAccess();  
+          console.log("Access token refreshed successfully on app load."); 
+          return;       
+        } catch (err) {
+          console.error("Failed to refresh access token on app load:", err);
+
+          const status = err.response?.status;
+          if (status === 400 || status === 401) {
+            logout();
+          } 
           return;
         }
         // no tokens
-      } else {
-        logout();
       }
-    }
+    };
+
     init();
   }, []);
 

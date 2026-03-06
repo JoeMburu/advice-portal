@@ -5,8 +5,10 @@ const USER_KEY = 'user_info';
 export const tokenStorage = {
   getAccess: () => localStorage.getItem(ACCESS_KEY),
   getRefresh: () => localStorage.getItem(REFRESH_KEY),
-  getUser: () => JSON.parse(localStorage.getItem(USER_KEY) || null),
-
+  getUser: () => { 
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  },
   setTokens: (access, refresh) => {
     localStorage.setItem(ACCESS_KEY, access);
     localStorage.setItem(REFRESH_KEY, refresh);

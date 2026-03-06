@@ -123,26 +123,5 @@ def decrease_cart_item(request, product_id):
         status=status.HTTP_200_OK,
     )
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated]) 
-def checkout(request):
-    print("Checkout initiated")
-    user = request.user if request.user.is_authenticated else None
-    message = request.data.get("message")
-    print("Checkout message sent:", message)    
-    print("User during checkout:", user)
-    # cart_id = _cart_id(request)
-    # if user:
-    #     cart = get_object_or_404(Cart, user=user)
-    # else:
-    #     cart = get_object_or_404(Cart, cart_id=cart_id, user=None)      
-    
-    # # Here you would typically handle payment processing and order creation.
-    # # For simplicity, we'll just clear the cart.
-    
-    # cart.items.all().delete()
-    
-    return Response({"message": "Checkout completed successfully post"}, status=status.HTTP_200_OK)
 
 
-# New view

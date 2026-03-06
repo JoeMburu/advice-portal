@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AuthProvider from './auth/AuthProvider.jsx'
 import ProductProvider  from './product/ProductProvider.jsx'
 import CartProvider  from './cart/CartProvider.jsx'
+import OrderProvider  from './order/OrderProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')).render(
         <AuthProvider>
           <ProductProvider>
             <CartProvider>
-              <App />
+              <OrderProvider>
+                <App />
+              </OrderProvider>
             </CartProvider>
           </ProductProvider>
         </AuthProvider>

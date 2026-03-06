@@ -65,6 +65,7 @@ INSTALLED_APPS = [
   "category",
   "store",
   "cart",
+  "orders",
 ]
 SITE_ID = 1
 
